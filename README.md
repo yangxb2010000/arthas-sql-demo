@@ -1,7 +1,7 @@
 # arthas-sql-demo
 arthas sql profiler demo
 
-该demo是为了验证arthas的splprofiler功能。
+该demo是为了验证arthas的splprofiler功能，执行步骤：
 
 1. 由于该项目demo使用的h2内存数据库，项目直接编译运行即可。
 

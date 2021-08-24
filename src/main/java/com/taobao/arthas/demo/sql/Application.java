@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @SpringBootApplication
 @EnableScheduling
@@ -23,10 +25,10 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 10000)
     public void executeSql() {
         System.out.println("=============" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        System.out.println("executing com.taobao.arthas.demo.sql: select * from org_user");
+        System.out.println("executing sql: select * from org_user");
         jdbcTemplate.query("select * from org_user", new RowMapper<Object>() {
             @Override
             public Object mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -34,7 +36,7 @@ public class Application {
             }
         });
 
-        System.out.println("executing com.taobao.arthas.demo.sql: select * from org_user where age <= ?");
+        System.out.println("executing sql: select * from org_user where age <= ?");
         jdbcTemplate.query("select * from org_user where age <= ?", new Object[]{18}, new RowMapper<Object>() {
             @Override
             public Object mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -42,7 +44,15 @@ public class Application {
             }
         });
 
-        System.out.println("executing com.taobao.arthas.demo.sql: update org_user set age = age + ?");
+        System.out.println("executing sql: update org_user set age = age + ?");
         jdbcTemplate.update("update org_user set age = age + ?", new Object[]{1});
+
+        System.out.println("executing sql: update org_user set age = age + 1;update org_user set age = age - 1");
+        jdbcTemplate.batchUpdate("update org_user set age = age + 1",
+                "update org_user set age = age - 1");
+
+        System.out.println("executing sql: update org_user set age = age + ? args: (10), (20)");
+        jdbcTemplate.batchUpdate("update org_user set age = age + ?",
+                Arrays.asList(new Object[][]{new Object[]{10}, new Object[]{20}}));
     }
 }
